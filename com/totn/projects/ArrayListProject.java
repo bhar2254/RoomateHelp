@@ -12,24 +12,54 @@ import java.util.Scanner;
 public class ArrayListProject
 {
 	private static Scanner in;
-	private static boolean debug = true;
-	private static ArrayList<Double> values = new ArrayList<Double>();	
+	private static boolean debug = false, isRunning = true;
+	private static ArrayList<Double> array = new ArrayList<Double>();	
 	
 	public static void main(String[] args)
 	{
+		ArrayList<Double> values = array;
+		
 //		Methods that will always run
 		inputValues(values);
 		checkForMore(values);
-		checkForRepeats(values);
 
 //		Methods that the use will select
-		rotatingLeft(values);
-		removeNegatives(values);
-		sort(values);
+		while(isRunning)
+		{
+			menu(values);
+		}
 		
 //		Final text and output
 		System.out.println("Thanks for using this program!");		
 		System.out.println("Final ArrayList: " + values);
+	}
+
+	private static void menu(ArrayList<Double> values) 
+	{
+		System.out.println("What would you like to do with your array?");
+		System.out.println("1. Add more values.");
+		System.out.println("2. Rotate to the left.");
+		System.out.println("3. Remove negative numbers.");
+		System.out.println("4. Sort numerically.");
+		System.out.println("5. Check for repitions.");
+		System.out.println("6. Quit.");
+
+		in = new Scanner(System.in);
+		int userSelection = in.nextInt();
+		if(userSelection == 1)
+			inputValues(values);
+		if(userSelection == 2)
+			rotatingLeft(values);
+		if(userSelection == 3)
+			removeNegatives(values);
+		if(userSelection == 4)
+			sort(values);
+		if(userSelection == 5)
+			checkForRepeats(values);
+		if(userSelection == 6)
+			isRunning = false;
+		else
+			System.out.println("Current ArrayList: " + values);
 	}
 
 	private static void inputValues(ArrayList<Double> values)
