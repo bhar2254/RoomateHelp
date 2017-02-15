@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class ArrayListProject
 {
 	private static Scanner in;
-	private static boolean debug = false;
+	private static boolean debug = true;
 	private static ArrayList<Double> values = new ArrayList<Double>();	
 	
 	public static void main(String[] args)
@@ -20,17 +20,28 @@ public class ArrayListProject
 //		Methods that will always run
 		inputValues(values);
 		checkForMore(values);
+		checkForRepeats(values);
 
 //		Methods that the use will select
-		removeNegatives(values);
 		rotatingLeft(values);
+		removeNegatives(values);
 		sort(values);
 		
 //		Final text and output
 		System.out.println("Thanks for using this program!");		
 		System.out.println("Final ArrayList: " + values);
 	}
-	
+
+	private static void inputValues(ArrayList<Double> values)
+	{
+//		Waits for the user to input values for the array or to issue the escape command
+		System.out.println("Please insert values, insert Q to quit");
+		in = new Scanner(System.in);
+		
+		while(in.hasNextDouble())
+			values.add(in.nextDouble());
+	}
+
 	private static void checkForMore(ArrayList<Double> values)
 	{
 //		Setup booleans to use
@@ -48,47 +59,50 @@ public class ArrayListProject
 			
 //			Open a Scanner to check for the user's Y/N (yes or no) response.
 			firstRun = false;
-			@SuppressWarnings("resource")
-			Scanner in = new Scanner(System.in);
-			response = in.nextLine();
+			
+			response = new Scanner(System.in).nextLine();
 			debug("RESPONSE: " + response);
 			
 //			If the response begins with Y then the user answered truthfully
 			if(response.toLowerCase().startsWith("y")
-					|| response.toLowerCase().startsWith("y"))
+					|| response.toLowerCase().startsWith("n"))
 				responded = true;
 		}
 		
 //		If the user says yes then they can input more values into the ArrayList	
 		if(response.toLowerCase().startsWith("y"))
-		{
 			inputValues(values);
-		}
 	}
-
-	public static void inputValues(ArrayList<Double> values)
+	
+	private static void checkForRepeats(ArrayList<Double> values) 
 	{
-//		Waits for the user to input values for the array or to issue the escape command
-		System.out.println("Please insert values, insert Q to quit");
-		in = new Scanner(System.in);
+		int repeats = 1, highestRepeat = 0;
+		Double mode = null;
 		
-		while(in.hasNextDouble())
+		for(int i = 1; i < values.size(); i++)
 		{
-			values.add(in.nextDouble());
+			debug("Checking " + values.get(i) + " and " + values.get(i-1));
+			if(values.get(i).intValue() == values.get(i-1).intValue())
+			{
+				debug("Found ONE!");
+				repeats++;
+				if(repeats > highestRepeat)
+				{
+					mode = values.get(i);
+					highestRepeat = repeats;
+				}
+			} else {
+				debug("Not it");
+				repeats = 1;
+			}
 		}
+		if(mode!=null)
+			System.out.println("Mode: " + mode + " | Repeats: " + highestRepeat + " times.");
+		else
+			System.out.println("No Consecutive Repitition");
 	}
 	
-	public static void rotatingLeft(ArrayList<Double> values)
-	{
-//		Moves all of the values to the left once
-		debug("Moving VALUES to the left...");
-		
-		double starting = values.get(0);
-		values.add(starting);
-		values.remove(0);
-	}
-	
-	public static void removeNegatives(ArrayList<Double> values)
+	private static void removeNegatives(ArrayList<Double> values)
 	{
 //		Deletes all values which are less than zero (negative)
 		debug("Removing Negatives...");
@@ -99,18 +113,29 @@ public class ArrayListProject
 			{
 				debug("Removing value: " + i + " from VALUES");
 				values.remove(i);
+				i-=1;
 			}
 		}
 	}
 	
-	public static void sort(ArrayList<Double> values)
+	private static void rotatingLeft(ArrayList<Double> values)
+	{
+//		Moves all of the values to the left once
+		debug("Moving VALUES to the left...");
+		
+		double starting = values.get(0);
+		values.add(starting);
+		values.remove(0);
+	}
+	
+	private static void sort(ArrayList<Double> values)
 	{
 //		A very simple method to sort all of the values in values
 		debug("Sorting...");
 		Collections.sort(values);
 	}
 	
-	public static void debug(String text)
+	private static void debug(String text)
 	{
 //		My favorite debugging method that only outputs text when the debug
 //		boolean is true. 
